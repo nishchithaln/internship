@@ -1,30 +1,12 @@
-import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
-function FormModal({ handleSave, handleClose, show }) {
-
-    const [formInput, setFormInput] = useState({
-        id: "",
-        name: "",
-        course: "",
-    });
-
-    const handleChange = (e) => {
-
-        const { name, value } = e.target;
-        setFormInput({ ...value, [name]: value });
-        // console.log(formInput);
 
 
-    }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("This form is Submitted")
-        console.log("Data=======",formInput)
-    }
+function FormModal({ handleSubmit, handleClose, show,setId,setName,setClassname}) {
+    
 
 
     return (
@@ -43,17 +25,17 @@ function FormModal({ handleSave, handleClose, show }) {
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3" controlId="formBasicId">
                             <Form.Label>ID</Form.Label>
-                            <Form.Control type="text" placeholder="Enter id" name="ids" onChange={(e)=>handleChange(e)} value={formInput.id} />
+                            <Form.Control type="text" placeholder="Enter id" onChange={(e)=> setId(e.target.value)}  />
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="formBasicName">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" placeholder="Enter Name" name="names" onChange={(e)=>handleChange(e)} value={formInput.name} />
+                            <Form.Control type="text" placeholder="Enter Name" onChange={(e)=> setName(e.target.value)}/>
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="formBasicCourse">
                             <Form.Label>Course</Form.Label>
-                            <Form.Control type="text" placeholder="Enter Course" name="courses" onChange={(e)=>handleChange(e)} value={formInput.course} />
+                            <Form.Control type="text" placeholder="Enter Course" onChange={(e)=> setClassname(e.target.value)}/>
                         </Form.Group>
 
                         <Modal.Footer>

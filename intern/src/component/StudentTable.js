@@ -2,22 +2,96 @@
 import React, { useState } from 'react'
 import studentdata from '../studentdata.json'
 import FormModal from './modal/FormModal';
+import { BiSortAlt2 } from "react-icons/bi";
+import EditForm from './modal/EditForm';
 
 const StudentTable = () => {
     const [studentinfo, setstudentinfo] = useState(studentdata);
 
     const [show, setShow] = useState(false);
+    const [showEdit, setShowEdit] = useState(false);        
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-    const handleSave = ()=> {
+    const [id, setId] = useState('');
+    const [name, setName] = useState('');
+    const [classname, setClassname] = useState('');
+    const [namesort, setNamesort] = useState(false);
+    //edit
+	const initialFormState = { id: null, name: '', classname: '' }
+	const [ currentUser, setCurrentUser ] = useState(initialFormState)
 
-    }
+	const [ editing, setEditing ] = useState(false)
+    
+
+
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    
+    const handleShowEdit = () => setShowEdit(true);
+    const handleCloseEdit = () => setShowEdit(false);
+
+
+
+    
+const handleEdit=(user,index)=>{
+    
+    setEditing(true)
+
+	setCurrentUser({ id: user.id, name: user.name, classname: user.classname })
+    
+    handleShowEdit();
+    // console.log(currentUser,index);
+
+
+}
+
+
+
 
     const handleDelete = (id) => {
         setstudentinfo(studentinfo.filter(item => item.id !== id))
         console.log(id)
     }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (id.length > 0 && name.length > 3 && classname.length > 3) {
+            setstudentinfo([...studentinfo, { id, name, classname }]);
+            setId("");
+            setName("");
+            setClassname("");
+            handleClose();
+        }
+
+
+    }
+     const handleEditSubmit=(e)=>{
+        e.preventDefault();
+        
+
+
+        
+     }
+    const sortName = () => {
+        if (namesort === false) {
+            setNamesort(true);
+
+            const ascsorting = [...studentinfo].sort((a, b) =>
+                a.name > b.name ? 1 : -1,
+            );
+            setstudentinfo(ascsorting);
+        }
+        else {
+            setNamesort(false);
+            const descsorting = [...studentinfo].sort((a, b) =>
+                a.name > b.name ? -1 : 1,
+            );
+            setstudentinfo(descsorting);
+
+        }
+
+
+    }
+update()
 
 
 
@@ -25,8 +99,9 @@ const StudentTable = () => {
 
 
     return (
-        <div> 
-            <FormModal handleClose={handleClose} handleSave={handleSave} show={show} />
+        <div>
+            <EditForm handleCloseEdit={handleCloseEdit} handleEditSubmit={handleEditSubmit} showEdit={showEdit} currentUser={currentUser} />
+            <FormModal handleClose={handleClose} handleSubmit={handleSubmit} show={show} setId={setId} setName={setName} setClassname={setClassname} />
             <div className="container my-5 card">
                 <div className="row mt-5 studentlist">
                     <div className="d-flex justify-content-between">
@@ -71,8 +146,7 @@ const StudentTable = () => {
                                 <tr>
                                     <th scope="col">UUID </th>
                                     <th scope="col">ID </th>
-                                    <th scope="col" className="d-flex justify-content-between">Name<span><i
-                                        className="bi bi-sort-alpha-down" id="sorticon"></i></span></th>
+                                    <th scope="col" className="d-flex justify-content-between">Name<span onClick={sortName}><BiSortAlt2 /></span></th>
                                     <th scope="col" className="justify-content-between">Course Name<span><i
                                         className="bi bi-sort-alpha-down"></i></span></th>
                                     <th scope="col">Action</th>
@@ -86,7 +160,7 @@ const StudentTable = () => {
                                         <td>{ele.name}</td>
                                         <td>{ele.classname}</td>
                                         <td>
-                                            <button className='btn btn-outline-primary me-3'>Edit</button>
+                                            <button className='btn btn-outline-primary me-3' onClick={()=> handleEdit(ele,index)}>Edit</button>
                                             <button className='btn btn-outline-danger' id='studentdelete' onClick={() => handleDelete(ele.id)}>Delete</button>
 
                                         </td>
@@ -111,47 +185,7 @@ const StudentTable = () => {
                         </div>
 
                     </div>
-                    <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title" id="exampleModalLabel">Add New Student</h5>
-                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div className="modal-body">
-                                    <form id="formone">
-                                        <div className="mb-3 input-icon">
-                                            <label htmlFor="recipient-id" className="col-form-label">ID</label>
-                                            <input type="number" className="form-control" id="recipient-id" placeholder="Enter ID" />
-                                            <span id="id-error" className="error"></span>
-
-                                        </div>
-                                        <div className="mb-3 input-icon">
-                                            <label htmlFor="recipient-name" className="col-form-label">Name</label>
-                                            <input type="text" className="form-control" id="recipient-name"
-                                                placeholder="Enter Name" />
-                                            <span id="name-error" className="error"></span>
-
-                                        </div>
-                                        <div className="mb-3 input-icon">
-                                            <label htmlFor="recipient-course" className="col-form-label">Course Name</label>
-                                            <input type="text" className="form-control" id="recipient-course"
-                                                placeholder="Enter Course Name" />
-                                            <span id="course-error" className="error"></span>
-
-                                        </div>
-
-                                    </form>
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" className="btn btn-primary" data-bs-dismiss="modal" id="addme">Add
-                                        Me</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
 
 
                 </div>
